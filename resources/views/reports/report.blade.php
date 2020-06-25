@@ -109,11 +109,11 @@
             <td colspan="2">
                 <table id="summation">
                     <tr>
-                        <td>Expected Cost</td>
+                        <td>Expected Income</td>
                         <td><b>{{number_format($total,2)}}</b></td>
                     </tr>
                     <tr>
-                        <td>Actual cost</td>
+                        <td>Actual Income</td>
                         <td><b>{{number_format($report->actual_amount,2)}}</b>
                             {{$report->currency}}</td>
                     </tr>
