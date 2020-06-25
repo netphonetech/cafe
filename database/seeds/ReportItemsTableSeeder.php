@@ -19,7 +19,7 @@ class ReportItemsTableSeeder extends Seeder
         $items = Items::where('status', true)->get()->pluck('id')->toArray();
         $reports = Report::where('status', true)->get()->pluck('id')->toArray();
         foreach ($reports as $report) {
-            for ($i = 0; $i < 40; $i++) {
+            for ($i = 0; $i < 30; $i++) {
                 DB::table('report_items')->insert([
                     'reportID' => $report,
                     'itemID' => $faker->randomElement($items),

@@ -24,6 +24,7 @@
                                 {{-- <th>Expected</th>
                                 <th>Actual</th> --}}
                                 <th></th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,6 +45,10 @@
                                         class="btn btn-info btn-sm">
                                         View
                                     </a>
+                                </td>
+                                <td>
+                                    <a href="{{ route('print-report',['id'=>$report->id]) }}"
+                                        class="btn btn-success float-right btn-sm">Print</a>
                                 </td>
                             </tr>
                             @endforeach

@@ -6,7 +6,8 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header">List of items
-
+                    <a href="{{ route('print-report',['id'=>$report->id]) }}"
+                        class="btn btn-success float-right">Print</a>
                 </div>
 
                 <div class="card-body row">

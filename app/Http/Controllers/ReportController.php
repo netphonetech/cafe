@@ -186,10 +186,12 @@ class ReportController extends Controller
     {
         $report = Report::where('reports.id', $request->id)->first();
         if ($report) {
-            $name = "Report-" . $report->name . " for " . $report->for . ".pdf";
-            $items = ReportItem::where('reportID', $report->id)->get();
-            // return view('report.report', compact('report', 'items'));
-            $pdf = PDF::loadView('report.report', compact('report', 'items'));
+            $name = "Report-of-" . $report->date . ".pdf";
+            $items = ReportItem::where('reportID', $report->id)->join('items', 'items.id', 'report_items.itemID')
+                ->select('report_items.id', 'itemID', 'items.item', 'report_items.quantity', 'items.description', 'report_items.price', 'report_items.portions')
+                ->get();
+            // return view('reports.report', compact('report', 'items'));
+            $pdf = PDF::loadView('reports.report', compact('report', 'items'));
             return $pdf->download(str_replace(" ", "_", $name));
         }
     }
