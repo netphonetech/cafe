@@ -157,7 +157,7 @@ class ReportController extends Controller
             'report_id' => 'required|numeric',
             'quantity' => 'required|numeric',
         ]);
-        $portions = ($request->quantity / $item->unit_amount) * $item->price;
+        $portions = ($request->quantity / $item->unit_amount) * $item->ratio_produced;
 
         $item = DB::table('report_items')->insert([
             'reportID' => $request->report_id,
