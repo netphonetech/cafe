@@ -5,8 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Dashboard
-                    <!-- Button trigger modal -->
+                <div class="card-header">List of items
                     <button type="button" class="btn btn-primary float-right" data-toggle="modal"
                         data-target="#modal-add">
                         Add new item
@@ -17,14 +16,15 @@
                     @if (!$items->first())
                     <h3 class="text-center">No item added yet</h3>
                     @else
-                    <table class="table table-bordered table-striped table-sm" id="many">
+                    <table class="table table-bordered table-striped table-sm" id="">
                         <thead class="thead-dark">
                             <tr>
                                 <th>#</th>
                                 <th>Item</th>
+                                <th>Unit Measure</th>
                                 <th>Unit Amount</th>
                                 <th>Max. Ratios</th>
-                                <th>Price</th>
+                                <th>Ratio price</th>
                                 <th></th>
                                 <th></th>
                             </tr>
@@ -40,9 +40,10 @@
                                     @endphp
                                 </td>
                                 <td>{{$item->item}}</td>
+                                <td>{{$item->unit_measure}}</td>
                                 <td>{{$item->unit_amount}}</td>
                                 <td>{{$item->ratio_produced}}</td>
-                                <td class="text-right">{{number_format(($item->price*$item->unit_amount),2,'.',',')}}
+                                <td class="text-right">{{number_format(($item->price),2,'.',',')}}
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-info btn-sm" data-toggle="modal"
@@ -51,7 +52,8 @@
                                     </button>
                                 </td>
                                 <td>
-                                    <form action="{{ route('item-destroy')}}" method="post">
+                                    <form action="{{ route('item-destroy')}}" method="post"
+                                        onsubmit="return confirm('delete this item?')">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$item->id}}">
                                         <button type="submit" class="btn btn-danger btn-sm">
@@ -77,7 +79,7 @@
                                         <div class="modal-body">
                                             <form method="POST" action="{{ route('item-update') }}">
                                                 @csrf
-                                                <input type="hidden" value="{{ $item->id}}">
+                                                <input type="hidden" name="id" value="{{ $item->id}}">
                                                 <div class="form-group row">
                                                     <label for="item"
                                                         class="col-md-4 col-form-label text-md-right">{{ __('Item') }}</label>
@@ -100,7 +102,7 @@
                                                     <label for="unit_amount"
                                                         class="col-md-4 col-form-label text-md-right">{{ __('Unit Amount') }}</label>
 
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <input id="unit_amount" type="text"
                                                             value="{{ $item->unit_amount}}" name="unit_amount" required
                                                             class="form-control @error('unit_amount') is-invalid @enderror">
@@ -111,8 +113,24 @@
                                                         </span>
                                                         @enderror
                                                     </div>
+                                                    <div class="col-md-4">
+                                                        <input id="unit_measure" type="text" name="unit_measure"
+                                                            required autocomplete="current-unit_measure"
+                                                            placeholder="Item unit measure eg (Kg)"
+                                                            value="{{$item->unit_measure}}"
+                                                            class="form-control @error('unit_measure') is-invalid @enderror">
 
-                                                    <div class="col-md-2">
+                                                        @error('unit_measure')
+                                                        <span class="invalid-feedback" role="alert">
+                                                            <strong>{{ $message }}</strong>
+                                                        </span>
+                                                        @enderror
+                                                    </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="description"
+                                                        class="col-md-4 col-form-label text-md-right">{{ __('Ratios per unit') }}</label>
+                                                    <div class="col-md-4">
                                                         <input id="ratios" type="text" name="ratios" required
                                                             value="{{ $item->ratio_produced}}" placeholder="Max Ratios"
                                                             class="form-control @error('ratios') is-invalid @enderror">
@@ -124,7 +142,7 @@
                                                         @enderror
                                                     </div>
 
-                                                    <div class="col-md-3">
+                                                    <div class="col-md-4">
                                                         <input id="price" type="text" name="price" required
                                                             value="{{ $item->price*$item->unit_amount }}"
                                                             placeholder="Price per ratio"
@@ -166,7 +184,7 @@
                                             </form>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
+                                            <button type="button" id="edit-{{ $item->id }}" class="btn btn-secondary"
                                                 data-dismiss="modal">Close</button>
                                         </div>
                                     </div>
@@ -216,9 +234,9 @@
                         <label for="unit_amount"
                             class="col-md-4 col-form-label text-md-right">{{ __('Unit Amount') }}</label>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <input id="unit_amount" type="text" name="unit_amount" required
-                                autocomplete="current-unit_amount"
+                                autocomplete="current-unit_amount" value="{{ old('unit_amount') }}"
                                 class="form-control @error('unit_amount') is-invalid @enderror">
 
                             @error('unit_amount')
@@ -228,9 +246,26 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-2">
+                        <div class="col-md-4">
+                            <input id="unit_measure" type="text" name="unit_measure" required
+                                value="{{ old('unit_measure') }}" autocomplete="current-unit_measure"
+                                placeholder="Item unit measure eg (Kg)"
+                                class="form-control @error('unit_measure') is-invalid @enderror">
+
+                            @error('unit_measure')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="description"
+                            class="col-md-4 col-form-label text-md-right">{{ __('Ratios per unit') }}</label>
+                        <div class="col-md-4">
                             <input id="ratios" type="text" name="ratios" required autocomplete="current-ratios"
-                                placeholder="Max Ratios" class="form-control @error('ratios') is-invalid @enderror">
+                                value="{{ old('ratios') }}" placeholder="Max Ratios"
+                                class="form-control @error('ratios') is-invalid @enderror">
 
                             @error('ratios')
                             <span class="invalid-feedback" role="alert">
@@ -239,9 +274,10 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <input id="price" type="text" name="price" required autocomplete="current-price"
-                                placeholder="Price per ratio" class="form-control @error('price') is-invalid @enderror">
+                                value="{{ old('price') }}" placeholder="Price per ratio"
+                                class="form-control @error('price') is-invalid @enderror">
 
                             @error('price')
                             <span class="invalid-feedback" role="alert">

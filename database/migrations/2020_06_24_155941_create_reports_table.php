@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemsTable extends Migration
+class CreateReportsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,10 @@ class CreateItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('reports', function (Blueprint $table) {
             $table->id();
-            $table->string('item', 500);
-            $table->double('unit_amount', 8, 2);
-            $table->double('ratio_produced', 6, 2);
-            $table->double('price', 12, 2);
-            $table->string('unit_measure', 100);
-            $table->text('description', 2000)->nullable();
+            $table->date('date');
+            $table->decimal('actual_amount', 12, 2)->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
         });
@@ -33,6 +29,6 @@ class CreateItemsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('reports');
     }
 }

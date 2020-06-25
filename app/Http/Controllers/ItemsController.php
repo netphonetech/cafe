@@ -32,13 +32,15 @@ class ItemsController extends Controller
             'ratios' => 'required|numeric',
             'price' => 'required|numeric',
             'description' => 'string|max:2000',
+            'unit_measure' => 'string|max:100',
         ]);
         $item = Items::insert([
             'item' => $request->item,
             'unit_amount' => $request->unit_amount,
             'ratio_produced' => $request->ratios,
-            'price' => ($request->price / $request->unit_amount),
+            'price' => ($request->price),
             'description' => $request->description,
+            'unit_measure' => $request->unit_measure,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -73,7 +75,7 @@ class ItemsController extends Controller
     {
         $item = Items::where('id', $request->id)->first();
         if (!$item) {
-            session()->flash("warning", "Failed, Selected user not exist");
+            session()->flash("warning", "Failed, Selected item not exist");
             return redirect()->back();
         }
         $this->validate($request, [
@@ -82,13 +84,15 @@ class ItemsController extends Controller
             'ratios' => 'required|numeric',
             'price' => 'required|numeric',
             'description' => 'string|max:2000',
+            'unit_measure' => 'string|max:100',
         ]);
         $item = $item->update([
             'item' => $request->item,
             'unit_amount' => $request->unit_amount,
             'ratio_produced' => $request->ratios,
-            'price' => ($request->price / $request->unit_amount),
+            'price' => ($request->price),
             'description' => $request->description,
+            'unit_measure' => $request->unit_measure,
             'updated_at' => now(),
         ]);
 
@@ -110,7 +114,7 @@ class ItemsController extends Controller
     {
         $item = Items::where('id', $request->id)->first();
         if (!$item) {
-            session()->flash("warning", "Failed, Selected user not exist");
+            session()->flash("warning", "Failed, Selected item not exist");
             return redirect()->back();
         }
         $item = $item->update([
